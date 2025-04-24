@@ -1,35 +1,35 @@
 import React, { useState } from 'react';
 import { LinearGradient } from 'expo-linear-gradient';
-import { View, Text, Alert, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
 import { Input, Button } from '@rneui/base';
 import Entypo from 'react-native-vector-icons/Entypo';
-import { login } from '../../services/user';
-import styles from './styles';
+import { registerUser } from '../../services/user';
+import styles from './styles'; // Importando os estilos
 
-function Login({ navigation }) {
+function Register({ navigation }) {
     const [showPassword, setShowPassword] = useState(false);
+    const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
 
-    const handleLogin = async () => {
-        setLoading(true);
-        console.log("Fazendo login com:", email, password);
+    async function handleRegister() {
+        if (!username || !email || !password) {
+            alert('Preencha todos os campos!');
+            return;
+        }
 
-        const result = await login(email, password);
+        setLoading(true);
+        const result = await registerUser({ username, email, password });
         setLoading(false);
 
-        console.log("Resultado do login:", result);
-
         if (result.success) {
-            console.log("Login bem-sucedido, navegando para Home");
-            Alert.alert('Sucesso', result.message);
-            navigation.navigate('Home');
-            console.log("Navegação chamada");
+            alert('Usuário criado com sucesso!');
+            navigation.navigate('Login');
         } else {
-            Alert.alert('Erro', result.message);
+            alert('Erro: ' + result.message);
         }
-    };
+    }
 
     return (
         <LinearGradient
@@ -38,8 +38,19 @@ function Login({ navigation }) {
         >
             <View style={styles.loginBox}>
                 <Text style={styles.headerText}>
-                    Login
+                    Sign In
                 </Text>
+                <Input
+                    placeholder='Username'
+                    value={username}
+                    onChangeText={setUsername}
+                    rightIcon={
+                        <Entypo
+                            name='user'
+                            size={20}
+                        />
+                    }
+                />
                 <Input
                     value={email}
                     onChangeText={setEmail}
@@ -60,19 +71,18 @@ function Login({ navigation }) {
                     }
                 />
                 <Button
-                    title={"Login"}
-                    onPress={handleLogin}
+                    title={loading ? "Creating..." : "Create Account"}
                     loading={loading}
-                    loadingProps={{ size: 'small', color: 'white' }}
+                    onPress={handleRegister}
                 />
                 <View style={{ flexDirection: 'row', marginTop: 20 }}>
                     <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 20 }}>
-                        <Text>Don't have an account? </Text>
+                        <Text>have an account? </Text>
                         <TouchableOpacity
-                            onPress={() => navigation.navigate("SignIn")}
+                            onPress={() => navigation.navigate("Login")}
                         >
                             <Text style={styles.linkText}>
-                                Sign Up
+                                Login
                             </Text>
                         </TouchableOpacity>
                     </View>
@@ -82,4 +92,4 @@ function Login({ navigation }) {
     );
 }
 
-export default Login;
+export default Register;
