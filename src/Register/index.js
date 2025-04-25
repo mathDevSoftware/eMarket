@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { LinearGradient } from 'expo-linear-gradient';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity, Keyboard, TouchableWithoutFeedback } from 'react-native';
 import { Input, Button } from '@rneui/base';
 import Entypo from 'react-native-vector-icons/Entypo';
-import { registerUser } from '../../services/user';
-import styles from './styles'; // Importando os estilos
+import { registerUser } from '../services/User/userApi';
+import styles from './styles';
 
 function Register({ navigation }) {
     const [showPassword, setShowPassword] = useState(false);
@@ -24,71 +24,72 @@ function Register({ navigation }) {
         setLoading(false);
 
         if (result.success) {
-            alert('Usuário criado com sucesso!');
-            navigation.navigate('Login');
+            navigation.navigate("Home")
         } else {
-            alert('Erro: ' + result.message);
+            alert(result.message);
         }
     }
 
     return (
-        <LinearGradient
-            colors={['#0D47A1', '#42A5F5']}
-            style={styles.container}
-        >
-            <View style={styles.loginBox}>
-                <Text style={styles.headerText}>
-                    Sign In
-                </Text>
-                <Input
-                    placeholder='Username'
-                    value={username}
-                    onChangeText={setUsername}
-                    rightIcon={
-                        <Entypo
-                            name='user'
-                            size={20}
-                        />
-                    }
-                />
-                <Input
-                    value={email}
-                    onChangeText={setEmail}
-                    placeholder='Email'
-                    rightIcon={{ name: "mail" }}
-                />
-                <Input
-                    placeholder='Password'
-                    value={password}
-                    onChangeText={setPassword}
-                    secureTextEntry={!showPassword}
-                    rightIcon={
-                        <Entypo
-                            name={showPassword ? "eye" : "eye-with-line"}
-                            size={20}
-                            onPress={() => setShowPassword(!showPassword)}
-                        />
-                    }
-                />
-                <Button
-                    title={loading ? "Creating..." : "Create Account"}
-                    loading={loading}
-                    onPress={handleRegister}
-                />
-                <View style={{ flexDirection: 'row', marginTop: 20 }}>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 20 }}>
-                        <Text>have an account? </Text>
-                        <TouchableOpacity
-                            onPress={() => navigation.navigate("Login")}
-                        >
-                            <Text style={styles.linkText}>
-                                Login
-                            </Text>
-                        </TouchableOpacity>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <LinearGradient
+                colors={['#0D47A1', '#42A5F5']}
+                style={styles.container}
+            >
+                <View style={styles.loginBox}>
+                    <Text style={styles.headerText}>
+                        Sign In
+                    </Text>
+                    <Input
+                        placeholder='Username'
+                        value={username}
+                        onChangeText={setUsername}
+                        rightIcon={
+                            <Entypo
+                                name='user'
+                                size={20}
+                            />
+                        }
+                    />
+                    <Input
+                        value={email}
+                        onChangeText={setEmail}
+                        placeholder='Email'
+                        rightIcon={{ name: "mail" }}
+                    />
+                    <Input
+                        placeholder='Password'
+                        value={password}
+                        onChangeText={setPassword}
+                        secureTextEntry={!showPassword}
+                        rightIcon={
+                            <Entypo
+                                name={showPassword ? "eye" : "eye-with-line"}
+                                size={20}
+                                onPress={() => setShowPassword(!showPassword)}
+                            />
+                        }
+                    />
+                    <Button
+                        title={loading ? "Creating..." : "Create Account"}
+                        loading={loading}
+                        onPress={handleRegister}
+                    />
+                    <View style={{ flexDirection: 'row', marginTop: 20 }}>
+                        <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 20 }}>
+                            <Text>have an account? </Text>
+                            <TouchableOpacity
+                                onPress={() => navigation.navigate("Login")}
+                            >
+                                <Text style={styles.linkText}>
+                                    Login
+                                </Text>
+                            </TouchableOpacity>
+                        </View>
                     </View>
                 </View>
-            </View>
-        </LinearGradient>
+            </LinearGradient>
+        </TouchableWithoutFeedback>
     );
 }
 

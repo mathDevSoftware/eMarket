@@ -3,9 +3,7 @@ import api from '../api'
 export async function registerUser(userData) {
     try {
         const response = await api.post('api/User/register', {
-            username,
-            email,
-            password,
+            ...userData
         }, {
             headers: {
                 "Content-Type": 'application/json',
@@ -21,9 +19,9 @@ export async function registerUser(userData) {
     }
 }
 
-export async function login(email, password) {
+export async function login(identifier, password) {
     try {
-        const response = await api.post('api/User/login', { email, password });
+        const response = await api.post('api/User/login', { identifier, password });
         console.log('Resposta da API:', response);
 
         return { success: true, message: response.data };
